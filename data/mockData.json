@@ -18,5 +18,9 @@
       "version": "v1",
       "updatedAt": "2023-11-05"
     }
+  ],
+  "requests": [
+    { "id": 1, "docType": "Fire Safety Certificate", "dueDate": "2026-02-15", "status": "Pending", "buyer": "Global Retailers" },
+    { "id": 2, "docType": "Environmental Audit", "dueDate": "2026-03-01", "status": "Pending", "buyer": "EcoStyle Europe" }
   ]
 }
