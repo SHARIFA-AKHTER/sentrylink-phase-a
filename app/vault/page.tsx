@@ -1,25 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Link from "next/link";
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import { useState } from "react";
 import { StatusChip } from "../components/ui/StatusChip";
-
+import data from "@/data/mockData.json";
 
 export default function EvidenceVault() {
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const filteredData = data.evidence.filter(
-    (item: { name: string; type: string; }) =>
+    (item: any) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.type.toLowerCase().includes(search.toLowerCase())
   );
+
   const toggleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedIds(filteredData.map((item: { id: any; }) => item.id));
+      setSelectedIds(filteredData.map((item: any) => String(item.id)));
     } else {
       setSelectedIds([]);
     }
   };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedIds([...selectedIds, id]);
+    } else {
+      setSelectedIds(selectedIds.filter((sid) => sid !== id));
+    }
+  };
+
   return (
     <div className="p-4 md:p-8 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -76,56 +87,36 @@ export default function EvidenceVault() {
                 <th className="py-4 px-4">Doc Name</th>
                 <th className="py-4 px-4">Type</th>
                 <th className="py-4 px-4">Status</th>
-                <th className="py-4 px-4 hidden md:table-cell text-center">
-                  Expiry
-                </th>
-                <th className="py-4 px-4 hidden sm:table-cell text-center">
-                  Versions
-                </th>
+                <th className="py-4 px-4 hidden md:table-cell text-center">Expiry</th>
+                <th className="py-4 px-4 hidden sm:table-cell text-center">Versions</th>
                 <th className="py-4 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredData.length > 0 ? (
-                filteredData.map((item: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; type: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; status: any; expiry: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; versions: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-slate-50 transition-colors group"
-                  >
+                filteredData.map((item: any) => (
+                  <tr key={item.id} className="hover:bg-slate-50 transition-colors group">
                     <td className="py-4 px-4">
                       <input
                         type="checkbox"
-                        checked={selectedIds.includes(item.id)}
-                        onChange={(e) => {
-                          if (e.target.checked)
-                            setSelectedIds([...selectedIds, item.id]);
-                          else
-                            setSelectedIds(
-                              selectedIds.filter((id) => id !== item.id)
-                            );
-                        }}
+                        checked={selectedIds.includes(String(item.id))}
+                        onChange={(e) => handleSelectOne(String(item.id), e.target.checked)}
                       />
                     </td>
-                    <td className="py-4 px-4 font-semibold text-slate-800">
-                      {item.name}
-                    </td>
+                    <td className="py-4 px-4 font-semibold text-slate-800">{item.name}</td>
                     <td className="py-4 px-4 text-slate-600">{item.type}</td>
                     <td className="py-4 px-4">
                       <StatusChip status={item.status} />
                     </td>
-                    <td className="py-4 px-4 hidden md:table-cell text-slate-500 text-center">
-                      {item.expiry}
-                    </td>
+                    <td className="py-4 px-4 hidden md:table-cell text-slate-500 text-center">{item.expiry}</td>
                     <td className="py-4 px-4 hidden sm:table-cell text-center">
                       <span className="bg-slate-100 px-2 py-0.5 rounded text-xs font-medium">
-                        {item.versions}
+                      
+                        {item.versions || item.version}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <Link
-                        href={`/vault/${item.id}`}
-                        className="text-blue-600 font-bold hover:text-blue-800"
-                      >
+                      <Link href={`/vault/${item.id}`} className="text-blue-600 font-bold hover:text-blue-800">
                         Details →
                       </Link>
                     </td>
