@@ -23,6 +23,8 @@ A modern, responsive dashboard built with **Next.js 15**, **Tailwind CSS**, and 
    cd sentrylink-task
 Install dependencies:
 
+Live Demo: https://sentrylink-task.vercel.app
+
 npm install
 Run the development server:
 npm run dev
