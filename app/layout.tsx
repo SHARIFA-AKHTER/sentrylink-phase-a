@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "./components/shared/Sidebar";
 import Navbar from "./components/shared/Navbar";
+import { Footer } from "./components/shared/Footer";
 
 
 
@@ -32,6 +33,8 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">
               {children}
+
+              <Footer />
             </main>
           </div>
         </div>
