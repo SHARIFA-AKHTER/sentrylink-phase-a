@@ -36,3 +36,20 @@ Data is served from a local JSON file (mockData.json).
 Next.js 15 App Router is used for navigation.
 
 Tailwind CSS is used for styling to ensure scalability.
+
+---
+## Phase B: Implementation Details
+
+### Part C: Change Request
+**Rule:** "Buyer can only access evidence versions that were explicitly shared."
+**Change Implemented:** I introduced an `is_shared` boolean attribute in the `EvidenceVersion` entity. 
+- **The Filter:** The API logic was updated to add a mandatory condition: `WHERE version.is_shared = true`. 
+- **The Trigger:** This flag is set to `true` only when a Supplier selects a specific version during the "Fulfill Request" process or manually adds it to a "Pack".
+
+### Top 3 Risks & Mitigation
+1. **Security (Document Leakage):** Using public S3 URLs is a risk. 
+   - *Mitigation:* Use **AWS S3 Pre-signed URLs** with a 5-minute expiration for all document views.
+2. **Scalability (Heavy Exports):** Large zip exports can crash the main server. 
+   - *Mitigation:* Offload zipping to an **Async Background Worker** (Node.js worker threads or AWS Lambda).
+3. **Compliance (Data Residency):** Some buyers require data to stay in specific regions (e.g., GDPR). 
+   - *Mitigation:* Implement **Multi-region S3 buckets** and store metadata identifying the region of origin.
